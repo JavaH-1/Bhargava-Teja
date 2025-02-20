@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Fetch employee data on page load
+        	$.ajax({
+        	    url: "http://localhost:8081/EmployeeFormWebsite/EmployeeDashboardServlet",
+        	    method: "GET",
+        	    success: function (response) {
+        	        if (response.status === "success") {
+        	            $("#employeeName").text(response.data.name + "!");
+        	            $("#email").text(response.data.email);
+        	            $("#department").text(response.data.department);
+        	            $("#doj").text(response.data.doj);
+        	        } else {
+        	            alert(response.message);
+        	        }
+        	    },
+        	    error: function () {
+        	        alert("Error fetching employee data.");
+        	    }
+        	});
+        });
+    </script>
+    <style>
+    body {
+    		background-image: url("https://img.freepik.com/premium-photo/network-icons-simple-background-elegant-luxury-dynamic-style-business-corporate-social-template_510351-7169.jpg?ga=GA1.1.1867976586.1737306546&amp;semt=ais_incoming");
+            background-size: cover;
+            height: 100vh;
+    	}
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white text-center">
+                <h2>Employee Dashboard</h2>
+            </div>
+            <div class="card-body">
+                <h4>Welcome, <span id="employeeName">Loading...</span>!</h4>
+                <p><strong>Email:</strong> <span id="email">Loading...</span></p>
+                <p><strong>Department:</strong> <span id="department">Loading...</span></p>
+                <p><strong>Join Date:</strong> <span id="doj">Loading...</span></p>
+            </div>
+            <div class="card-footer text-end">
+            	<a href="GetById.html" class="btn btn-primary">Get By ID</a>
+                <a href="login.html" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

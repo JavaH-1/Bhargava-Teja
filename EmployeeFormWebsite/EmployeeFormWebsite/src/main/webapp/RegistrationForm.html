@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Data</title>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: 'http://localhost:8081/EmployeeFormWebsite/DropdownDataServlet',
+                method: 'GET',
+                data: { type: 'countries' },
+                success: function (response) {
+                    const countryDropdown = $('#country');
+                    countryDropdown.empty().append('<option value="">--Select Country--</option>');
+                    response.forEach(country => {
+                        countryDropdown.append(`<option value="${country}">${country}</option>`);
+                    });
+                },
+                error: function () {
+                    alert('Failed to load countries');
+                }
+            });
+
+            $('#country').change(function () {
+                const selectedCountry = $(this).val();
+                const stateDropdown = $('#state');
+
+                if (selectedCountry) {
+                    $.ajax({
+                        url: 'http://localhost:8081/EmployeeFormWebsite/DropdownDataServlet',
+                        method: 'GET',
+                        data: { type: 'states', country: selectedCountry },
+                        success: function (response) {
+                            stateDropdown.empty().append('<option value="">--Select State--</option>');
+                            response.forEach(state => {
+                                stateDropdown.append(`<option value="${state}">${state}</option>`);
+                            });
+                        },
+                        error: function () {
+                            alert('Failed to load states');
+                        }
+                    });
+                } else {
+                    stateDropdown.empty().append('<option value="">--Select State--</option>');
+                }
+            });
+        });
+
+        // Submit button function
+        function sendData(event) {
+            event.preventDefault();
+
+            const formData = {
+            	username: $("#username").val(),
+            	password: $("#password").val(),
+                employeeName: $("#employeeName").val(),
+                employeeId: $("#employeeId").val(),
+                email: $("#email").val(),
+                phone: $("#phone").val(),
+                department: $("#department").val(),
+                dob: $("#dob").val(),
+                "emg-contact": $("#emg-contact").val(),
+                doj: $("#doj").val(),
+                bank: $("#bank").val(),
+                country: $("#country").val(),
+                state: $("#state").val()
+            };
+
+            $.ajax({
+                url: "http://localhost:8081/EmployeeFormWebsite/JsDataServletJQuery",
+                type: "POST",
+                data: formData,
+                success: function (response) {
+                    if (response.status === "success") {
+                        window.location.href = `success.html?message=${encodeURIComponent(response.message)}`;
+                    } else {
+                        $("#response").html(`<div class="alert alert-danger">${response.message}</div>`);
+                    }
+                },
+                error: function () {
+                    $("#response").html(`<div class="alert alert-danger">An unexpected error occurred.</div>`);
+                }
+            });
+        }
+        
+        // Validations for each input 
+        function validateName() {
+		    const name = document.getElementById("employeeName").value.trim();
+		    const errorDiv = document.getElementById("employeeNameError");
+
+		    const nameRegex = /^[A-Za-z\s]+$/;
+
+		    if (!name || !nameRegex.test(name)) {
+		        errorDiv.textContent = "Name must contain only alphabets.";
+		    } else {
+		        errorDiv.textContent = "";
+		    }
+		}
+        
+        function validateEmail() {
+        	const email = document.getElementById("email").value.trim();
+	        const errorDiv = document.getElementById("emailError");
+
+	        if (!email || !/^[\w.%+-]+@[\w.-]+\.[A-Za-z]{2,}$/.test(email)) {
+	            errorDiv.textContent = "Please enter a valid email address.";
+	        } else {
+	            errorDiv.textContent = "";
+	        }
+	    }
+        
+        function validatePhone() {
+            const phone = document.getElementById("phone").value.trim();
+            const errorDiv = document.getElementById("phoneError");
+
+            if (!phone || !/^\d{10,15}$/.test(phone)) {
+                errorDiv.textContent = "Phone number must be 10-15 digits long.";
+            } else {
+                errorDiv.textContent = "";
+            }
+        }
+        
+        function validatePassword(password) {
+            // Password must be at least 8 characters long
+            if (password.length < 8) {
+                return { valid: false, message: "Password must be at least 8 characters long." };
+            }
+
+            // Check if password contains at least one lowercase letter
+            if (!/[a-z]/.test(password)) {
+                return { valid: false, message: "Password must contain at least one lowercase letter." };
+            }
+
+            // Check if password contains at least one uppercase letter
+            if (!/[A-Z]/.test(password)) {
+                return { valid: false, message: "Password must contain at least one uppercase letter." };
+            }
+
+            // Check if password contains at least one digit
+            if (!/[0-9]/.test(password)) {
+                return { valid: false, message: "Password must contain at least one digit." };
+            }
+
+            // Check if password contains at least one special character
+            if (!/[^a-zA-Z0-9]/.test(password)) {
+                return { valid: false, message: "Password must contain at least one special character." };
+            }
+
+            // If all conditions are met, return valid
+            return { valid: true, message: "Password is valid." };
+        }
+        
+    </script>
+    <style>
+    
+    	body {
+    		background-image: url("https://img.freepik.com/premium-photo/network-icons-simple-background-elegant-luxury-dynamic-style-business-corporate-social-template_510351-7169.jpg?ga=GA1.1.1867976586.1737306546&amp;semt=ais_incoming");
+            background-size: cover;
+            height: 100vh;
+    	}
+        .form-container {
+            max-width: 600px;
+            
+        }
+    </style>
+</head>
+<body>
+    <div class="container form-container mt-5">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white text-center">
+                <h3>Employee Data Form</h3>
+            </div>
+            <div class="card-body">
+                <form id="employeeForm">
+                	<div class="mb-3">
+                   		<label for="username" class="form-label">Create Username</label>
+                    	<input type="text" id="username" name="username" class="form-control" required>
+               		</div>
+               		<div class="mb-3">
+                    	<label for="password" class="form-label">Create Password</label>
+                    	<input type="password" id="password" name="password" class="form-control" oninput="validatePassword()"required>
+                	</div>
+                    <div class="mb-3">
+                        <label for="employeeName" class="form-label">Employee Name</label>
+                        <input type="text" class="form-control" id="employeeName" placeholder="Enter employee name" oninput="validateName()" required>
+                        <div id="employeeNameError" class="text-danger small"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="employeeId" class="form-label">Employee ID</label>
+                        <input type="text" class="form-control" id="employeeId" placeholder="Enter employee ID" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter employee email" oninput="validateEmail()" required>
+                        <div id="emailError" class="text-danger small"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone" placeholder="Enter phone number" oninput="validatePhone()" maxlength="15" required>
+                        <div id="phoneError" class="text-danger small"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dob" class="form-label">Date of Birth</label>
+                        <input type="date" class="form-control" id="dob">
+                    </div>
+                    <div class="mb-3">
+                        <label for="department" class="form-label">Department</label>
+                        <select class="form-select" id="department" required>
+                            <option value="" disabled selected>Select department</option>
+                            <option value="HR">HR</option>
+                            <option value="IT">IT</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Marketing">Marketing</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="country" class="form-label">Country</label>
+                        <select id="country" name="country" class="form-select">
+                            <option value="">--Select Country--</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="state" class="form-label">State</label>
+                        <select id="state" name="state" class="form-select">
+                            <option value="">--Select State--</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="emg-contact" class="form-label">Emergency Contact</label>
+                        <input type="tel" class="form-control" id="emg-contact" placeholder="Enter emergency contact" maxlength="15" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="doj" class="form-label">Date of Joining</label>
+                        <input type="date" class="form-control" id="doj">
+                    </div>
+                    <div class="mb-3">
+                        <label for="bank" class="form-label">Bank</label>
+                        <select class="form-select" id="bank" required>
+                            <option value="" disabled selected>Select Bank</option>
+                            <option value="SBI">State Bank of India</option>
+                            <option value="HDFC">HDFC</option>
+                            <option value="Axis">Axis Bank</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button onclick="sendData(event)" type="button" class="btn btn-success">Submit</button>
+                    </div>
+                </form>
+                <div id="response" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

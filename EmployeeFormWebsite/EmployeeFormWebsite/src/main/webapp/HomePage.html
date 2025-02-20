@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            
+            color: white;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            background-image: url("https://img.freepik.com/premium-photo/network-icons-simple-background-elegant-luxury-dynamic-style-business-corporate-social-template_510351-7169.jpg?ga=GA1.1.1867976586.1737306546&amp;semt=ais_incoming");
+            background-size: cover;
+            height: 100vh;
+        }
+        .welcome-container {
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            margin: auto;
+            
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .welcome-quote {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .register-btn {
+            animation: bounceIn 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container welcome-container">
+        <h1 class="welcome-quote text-black fst-italic fs-1 ">Welcome to Our Portal! Register Now to Get Started</h1>
+        <a href="login.html" class="btn btn-primary fs-3 btn-lg register-btn">Login</a>
+        <a href="RegistrationForm.html" class="btn btn-primary fs-3 btn-lg register-btn">Register</a>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
